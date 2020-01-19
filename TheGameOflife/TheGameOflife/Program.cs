@@ -9,42 +9,48 @@ namespace TheGameOfLife
         static void Main(string[] args)
         {
             int[,] grid = Make2DArray(gridSize, gridSize);
-            int[,] nextGrid = grid;
-
-            NextGeneration(grid, nextGrid);
-        }
-
-        public static void NextGeneration(int[,] grid, int[,] nextGrid)
-        {
+            int[,] nextGrid = Make2DArray(gridSize, gridSize);
             while (true)
             {
                 Draw(grid);
 
-                for (int i = 0; i < gridSize; i++)
+                NextGeneration(grid, nextGrid);
+
+                (grid, nextGrid) = (nextGrid, grid);
+            }
+
+        }
+
+        public static int[,] NextGeneration(int[,] grid, int[,] nextGrid)
+        {
+            for (int i = 0; i < gridSize; i++)
+            {
+                for (int j = 0; j < gridSize; j++)
                 {
-                    for (int j = 0; j < gridSize; j++)
-                    {
-                        int state = grid[i, j];
-                        int neighbors = CountNeighbors(grid, i, j);
+                    CellProcessing(grid, nextGrid, i, j);
+                }   
+            }
 
-                        if (state == 0 && neighbors == 3)
-                        {
+            return grid;
+        }
 
-                            nextGrid[i, j] = 1;
-                        }
-                        else if (state == 1 && (neighbors < 2 || neighbors > 3))
-                        {
-                            nextGrid[i, j] = 0;
-                        }
-                        else
-                        {
-                            nextGrid[i, j] = state;
-                        }
-                    }
+        public static void CellProcessing(int[,] grid, int[,] nextGrid, int i, int j)
+        {
+            int state = grid[i, j];
+            int neighbors = CountNeighbors(grid, i, j);
 
-                    grid = nextGrid;
-                    Thread.Sleep(1);
-                }
+            if (state == 0 && neighbors == 3)
+            {
+
+                nextGrid[i, j] = 1;
+            }
+            else if (state == 1 && (neighbors < 2 || neighbors > 3))
+            {
+                nextGrid[i, j] = 0;
+            }
+            else
+            {
+                nextGrid[i, j] = state;
             }
         }
 
