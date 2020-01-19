@@ -1,43 +1,31 @@
 ﻿using System;
 using System.Threading;
 
-namespace TheGameOflife
+namespace TheGameOfLife
 {
     class Program
     {
-        public static int numberOfColAndRow = 30;
-
+        public static int gridSize = 20;
         static void Main(string[] args)
         {
-            int[,] grid = Make2DArray(numberOfColAndRow, numberOfColAndRow);
-            int[,] nextGrid = Make2DArray(numberOfColAndRow, numberOfColAndRow);
+            int[,] grid = Make2DArray(gridSize, gridSize);
+            int[,] nextGrid = grid;
 
-            Console.Clear();
-            Console.CursorVisible = false;
+            NextGeneration(grid, nextGrid);
+        }
 
+        public static void NextGeneration(int[,] grid, int[,] nextGrid)
+        {
             while (true)
             {
-                Console.SetCursorPosition(0, 0);
+                Draw(grid);
 
-                for (int i = 0; i < numberOfColAndRow; i++)
+                for (int i = 0; i < gridSize; i++)
                 {
-                    for (int j = 0; j < numberOfColAndRow; j++)
+                    for (int j = 0; j < gridSize; j++)
                     {
-                        if (grid[i, j] == 1)
-                        {
-                            Console.ForegroundColor = ConsoleColor.Green;
-                            Console.Write("■■ ");
-                            Console.ForegroundColor = ConsoleColor.White;
-                        }
-                        else
-                        {
-                            Console.ForegroundColor = ConsoleColor.White;
-                            Console.Write("■■ ");
-                            Console.ForegroundColor = ConsoleColor.White;
-                        }
-
                         int state = grid[i, j];
-                        int neighbors = countNeighbors(grid, i, j);
+                        int neighbors = CountNeighbors(grid, i, j);
 
                         if (state == 0 && neighbors == 3)
                         {
@@ -52,17 +40,42 @@ namespace TheGameOflife
                         {
                             nextGrid[i, j] = state;
                         }
-
                     }
 
-                    Console.WriteLine();
                     grid = nextGrid;
-                    Thread.Sleep(0);
+                    Thread.Sleep(1);
                 }
             }
         }
 
-        public static int countNeighbors(int[,] grid, int x, int y)
+        public static void Draw(int[,] grid)
+        {
+            Console.CursorVisible = false;
+            Console.SetCursorPosition(0, 0);
+
+            for (int i = 0; i < gridSize; i++)
+            {
+                for (int j = 0; j < gridSize; j++)
+                {
+                    if (grid[i, j] == 1)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.Write("■■ ");
+                        Console.ForegroundColor = ConsoleColor.White;
+                    }
+                    else
+                    {
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.Write("■■ ");
+                        Console.ForegroundColor = ConsoleColor.White;
+                    }
+                }
+
+                Console.WriteLine();
+            }
+        }
+
+        public static int CountNeighbors(int[,] grid, int x, int y)
         {
             int sum = 0;
 
@@ -70,8 +83,8 @@ namespace TheGameOflife
             {
                 for (int j = -1; j < 2; j++)
                 {
-                    int col = (x + i + numberOfColAndRow) % numberOfColAndRow;
-                    int row = (y + j + numberOfColAndRow) % numberOfColAndRow;
+                    int col = (x + i + gridSize) % gridSize;
+                    int row = (y + j + gridSize) % gridSize;
                     sum += grid[col, row];
                 }
             }
@@ -92,7 +105,6 @@ namespace TheGameOflife
                     array[i, g] = random.Next(0, 2);
                 }
             }
-
             return array;
         }
     }
