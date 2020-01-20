@@ -1,69 +1,38 @@
 ﻿using System;
 using System.Threading;
 
-namespace TheGameOfLife
+namespace TheGameOfLifeProject
 {
     class Program
     {
         public static int gridSize = 20;
+
         static void Main(string[] args)
         {
-            int[,] grid = Make2DArray(gridSize, gridSize);
-            int[,] nextGrid = Make2DArray(gridSize, gridSize);
+            Console.CursorVisible = false;
+
+            TheGameOfLife tol = new TheGameOfLife(gridSize);
+
+            bool[,] grid;
+                      
             while (true)
-            {
+            { 
+                grid = tol.Grid;
                 Draw(grid);
 
-                NextGeneration(grid, nextGrid);
-
-                (grid, nextGrid) = (nextGrid, grid);
-            }
-
-        }
-
-        public static int[,] NextGeneration(int[,] grid, int[,] nextGrid)
-        {
-            for (int i = 0; i < gridSize; i++)
-            {
-                for (int j = 0; j < gridSize; j++)
-                {
-                    CellProcessing(grid, nextGrid, i, j);
-                }   
-            }
-
-            return grid;
-        }
-
-        public static void CellProcessing(int[,] grid, int[,] nextGrid, int i, int j)
-        {
-            int state = grid[i, j];
-            int neighbors = CountNeighbors(grid, i, j);
-
-            if (state == 0 && neighbors == 3)
-            {
-
-                nextGrid[i, j] = 1;
-            }
-            else if (state == 1 && (neighbors < 2 || neighbors > 3))
-            {
-                nextGrid[i, j] = 0;
-            }
-            else
-            {
-                nextGrid[i, j] = state;
+                grid = tol.NextGrid;
             }
         }
 
-        public static void Draw(int[,] grid)
+        public static void Draw(bool[,] grid)
         {
-            Console.CursorVisible = false;
             Console.SetCursorPosition(0, 0);
 
             for (int i = 0; i < gridSize; i++)
             {
                 for (int j = 0; j < gridSize; j++)
                 {
-                    if (grid[i, j] == 1)
+                    if (grid[i, j] == true)
                     {
                         Console.ForegroundColor = ConsoleColor.Green;
                         Console.Write("■■ ");
@@ -79,39 +48,6 @@ namespace TheGameOfLife
 
                 Console.WriteLine();
             }
-        }
-
-        public static int CountNeighbors(int[,] grid, int x, int y)
-        {
-            int sum = 0;
-
-            for (int i = -1; i < 2; i++)
-            {
-                for (int j = -1; j < 2; j++)
-                {
-                    int col = (x + i + gridSize) % gridSize;
-                    int row = (y + j + gridSize) % gridSize;
-                    sum += grid[col, row];
-                }
-            }
-
-            sum -= grid[x, y];
-            return sum;
-        }
-
-        public static int[,] Make2DArray(int col, int row)
-        {
-            Random random = new Random();
-            int[,] array = new int[col, row];
-
-            for (int i = 0; i < col; i++)
-            {
-                for (int g = 0; g < col; g++)
-                {
-                    array[i, g] = random.Next(0, 2);
-                }
-            }
-            return array;
         }
     }
 }
