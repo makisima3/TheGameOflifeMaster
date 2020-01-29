@@ -1,26 +1,26 @@
 ﻿using System;
 using System.Threading;
 
-namespace TheGameOfLifeProject
+namespace TheGameOfLifeSesson
 {
     class Program
     {
-        public static int gridSize = 20;
 
         static void Main(string[] args)
         {
-            Console.CursorVisible = false;
-
-            TheGameOfLife tol = new TheGameOfLife(gridSize);
-
-            bool[,] grid;
-                      
             while (true)
-            { 
-                grid = tol.Grid;
-                Draw(grid);
+            {
+                Console.CursorVisible = false;
 
-                grid = tol.NextGrid;
+                GameOfLifeSesson session = new GameOfLifeSesson(50, 50, true);
+
+                Console.ReadKey();
+
+                while (true)
+                {
+                    Draw(session.grid);
+                    session.CalculateNextGeneration();
+                }
             }
         }
 
@@ -28,9 +28,9 @@ namespace TheGameOfLifeProject
         {
             Console.SetCursorPosition(0, 0);
 
-            for (int i = 0; i < gridSize; i++)
+            for (int i = 0; i < grid.GetLength(0); i++)
             {
-                for (int j = 0; j < gridSize; j++)
+                for (int j = 0; j < grid.GetLength(1); j++)
                 {
                     if (grid[i, j] == true)
                     {

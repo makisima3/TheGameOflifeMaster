@@ -1,114 +1,130 @@
 ﻿using System;
 
-class TheGameOfLife
+namespace TheGameOfLifeSesson
 {
-    public bool[,] Grid
+    class GameOfLifeSesson
     {
-        get
-        {
-            return grid;
-        }
-    }
-    public bool[,] NextGrid
-    {
-        get
-        {
-            NextGeneration(grid, nextGrid);
-            (grid, nextGrid) = (nextGrid, grid);
-            return grid;
-        }
-    }
 
-    private static int gridSize = 20;
-    private bool[,] grid = Make2DArray(gridSize, gridSize);
-    private bool[,] nextGrid = Make2DArray(gridSize, gridSize);
 
-    private static void NextGeneration(bool[,] grid, bool[,] nextGrid)
-    {
-        for (int i = 0; i < gridSize; i++)
+        private int width;
+        private int height;
+        public bool[,] grid;
+        private bool[,] nextGrid;
+        public GameOfLifeSesson(int Height, int Width, bool RandomFill)
         {
-            for (int j = 0; j < gridSize; j++)
+            width = Width;
+            height = Height;
+            if(RandomFill == true)
             {
-                nextGrid[i, j] = CellProcessing(grid, i, j);
+                grid = Make2DArrayWithRandom(Height, Width);
+                nextGrid = Make2DArrayWithRandom(Height, Width);
             }
-        }
-    }
-
-    private static bool CellProcessing(bool[,] grid, int i, int j)
-    {
-        bool state = grid[i, j];
-        int neighbors = CountNeighbors(grid, i, j);
-
-        if (state == false && neighbors == 3)
-        {
-            return true;
-        }
-        else if (state == true && (neighbors < 2 || neighbors > 3))
-        {
-            return false;
-        }
-        else
-        {
-            return state;
-        }
-    }
-
-    private static int CountNeighbors(bool[,] grid, int x, int y)
-    {
-        int sum = 0;
-
-        for (int i = -1; i < 2; i++)
-        {
-            for (int j = -1; j < 2; j++)
+            else
             {
-                int col = (x + i + gridSize) % gridSize;
-                int row = (y + j + gridSize) % gridSize;
+                grid = Make2DArrayEmpty(Height, Width);
+                nextGrid = Make2DArrayEmpty(Height, Width);
+            }     
+        }
 
-                if (grid[col, row] == true)
+        public bool this[int x, int y]
+        {
+            get { return grid[x, y]; }
+            set { grid[x, y] = value; }
+        }
+
+        private void NextGeneration(bool[,] grid, bool[,] nextGrid)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                for (int x = 0; x < width; x++)
                 {
-                    sum += 1;
+                    nextGrid[y, x] = CellProcessing(grid, y, x);
                 }
             }
         }
 
-        if (grid[x, y] == true)
+        private bool CellProcessing(bool[,] grid, int y, int x)
         {
-            sum -= 1;
+            bool isAlive = grid[y, x];
+            int neighbors = CountNeighbors(grid, y, x);
+
+            if ((!isAlive && neighbors == 3) || (isAlive && (neighbors == 2 || neighbors == 3)))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
-        return sum;
-    }
-
-    public static bool[,] Make2DArray(int col, int row)
-    {
-        Random random = new Random();
-        bool[,] array = new bool[col, row];
-
-        for (int i = 0; i < col; i++)
+        private int CountNeighbors(bool[,] grid, int y, int x)
         {
-            for (int g = 0; g < col; g++)
+            int sum = 0;
+
+            for (int i = -1; i < 2; i++)
             {
-                if (random.Next(0, 2) == 0)
+                for (int j = -1; j < 2; j++)
+                {
+                    int col = (x + i + width) % width;
+                    int row = (y + j + height) % height;
+
+                    if (grid[row, col] == true)
+                    {
+                        sum += 1;
+                    }
+                }
+            }
+
+            if (grid[y, x] == true)
+            {
+                sum -= 1;
+            }
+
+            return sum;
+        }
+
+        private bool[,] Make2DArrayWithRandom(int height, int width)
+        {
+            Random random = new Random();
+            bool[,] array = new bool[height, width];
+
+            for (int y = 0; y < height; y++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    if (random.Next(0, 2) == 0)
+                    {
+                        array[y, x] = false;
+                    }
+                    else
+                    {
+                        array[y, x] = true;
+                    }
+                }
+            }
+            return array;
+        }
+
+        private bool[,] Make2DArrayEmpty(int width, int height)
+        {
+            bool[,] array = new bool[width, height];
+
+            for (int i = 0; i < width; i++)
+            {
+                for (int g = 0; g < width; g++)
                 {
                     array[i, g] = false;
                 }
-                else
-                {
-                    array[i, g] = true;
-                }
             }
+            return array;
         }
-        return array;
-    }
 
-    public static void SetGridSize(int size)
-    {
-        gridSize = size;
-    }
+        public void CalculateNextGeneration()
+        {
+            NextGeneration(grid, nextGrid);
 
-    public TheGameOfLife(int size)
-    {
-        SetGridSize(size);
+            (grid, nextGrid) = (nextGrid, grid);
+        }
     }
 }
-
