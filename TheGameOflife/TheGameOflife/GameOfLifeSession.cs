@@ -4,20 +4,20 @@ namespace GameOfLife
 {
     class GameOfLifeSession
     {
+        public int Width { get; }
+
+        public int Height { get; }
+
         private bool[,] grid;
         private bool[,] nextGrid;
-
-        public int Width { get; set; }
-
-        public int Height { get; set; }
 
         public GameOfLifeSession(int height, int width)
         {
             Width = width;
             Height = height;
 
-            grid = MakeEmptyGrid();
-            nextGrid = MakeEmptyGrid();
+            grid = new bool[Height, Width];
+            nextGrid = new bool[Height, Width];
         }
 
         public void CalculateNextGeneration()
@@ -77,20 +77,6 @@ namespace GameOfLife
             }
 
             return sum;
-        }
-
-        private bool[,] MakeEmptyGrid()
-        {
-            bool[,] array = new bool[Height, Width];
-
-            for (int i = 0; i < Height; i++)
-            {
-                for (int g = 0; g < Width; g++)
-                {
-                    array[i, g] = false;
-                }
-            }
-            return array;
         }
 
         public bool this[int x, int y]

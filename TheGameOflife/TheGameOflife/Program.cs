@@ -5,7 +5,7 @@ namespace GameOfLife
 {
     class Program
     {
-        static GameOfLifeSession session = new GameOfLifeSession(20, 20);
+        static GameOfLifeSession session = new GameOfLifeSession(30, 30);
 
         static void Main(string[] args)
         {
